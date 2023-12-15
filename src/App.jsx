@@ -1,11 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import AddTaskForm from './components/AddTaskForm'
 import TaskList from './components/TaskList'
+import { DarkThemeContext } from './ThemeContext.jsx'
 import { MdDarkMode, MdSunny } from 'react-icons/md'
+
+function SunnyButton () {
+  const { darkTheme, toggleTheme } = useContext(DarkThemeContext)
+
+  return (
+    <MdSunny onClick={toggleTheme}
+             className={`bg-gray-300 cursor-pointer dark:bg-gray-700 p-2 rounded-lg  bottom-5 right-5 ${
+                darkTheme ? 'text-white' : 'text-black'
+              }`}
+             size={32}
+    />
+  )
+}
+
+function DarkButton () {
+  const { darkTheme, toggleTheme } = useContext(DarkThemeContext)
+
+  return (
+    <MdDarkMode
+      onClick={toggleTheme}
+      className={`bg-gray-300 cursor-pointer dark:bg-gray-700 p-2 rounded-lg  bottom-5 right-5 ${
+                darkTheme ? 'text-white' : 'text-black'
+              }`}
+      size={32}
+    />
+  )
+}
 
 function App () {
   const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || [])
-  const [darkTheme, setDarkTheme] = useState(false)
+  const { darkTheme, toggleTheme } = useContext(DarkThemeContext)
 
 
   useEffect(() => {
@@ -45,47 +73,26 @@ function App () {
   const getCompletedTasks = () => tasks.filter((task) => task.completed)
   const getRemainingTasks = () => tasks.filter((task) => !task.completed)
 
-  const toggleTheme = () => {
-    setDarkTheme((prevTheme) => !prevTheme)
-  }
 
   return (
-    <div
-      className={`hero ${
-        darkTheme ? 'bg-gray-900' : 'bg-gray-100'
-      } h-screen md:min-h-[700px]  w-full m-auto flex flex-col items-center mt-14 transition-all duration-500`}
-    >
-      <div
-        className={`flex flex-col space-y-6 w-[600px] md:w-[100%] z-10 p-4 ${
-          darkTheme ? 'text-white' : 'text-black'
+    <div id="App"
+         className={`hero
+                     ${darkTheme ? 'bg-gray-900' : 'bg-gray-100'}
+                     h-screen md:min-h-[700px]
+                     w-screen m-auto
+                     flex flex-col items-center
+                     transition-all duration-500`}>
+      <div className={`flex flex-col space-y-6 w-[600px] md:w-[100%] z-10 p-4 ${
+          darkTheme ? 'text-gray-100' : 'text-slate-700'
         }`}
       >
-        <div className=' w-full flex items-center justify-between'>
-          <h1 className=' uppercase text-4xl font-bold text-white tracking-widest mb-4 md:text-3xl'>
-            {/* Task Manager */}
-            My Tasks
+        <header className='w-full flex items-center justify-between'>
+          <h1 className={`uppercase text-4xl font-bold tracking-widest mb-4 md:text-3xl`}>
+            Tasks
           </h1>
 
-          {darkTheme
-            ? (
-              <MdSunny
-                onClick={toggleTheme}
-                className={`bg-gray-300 cursor-pointer dark:bg-gray-700 p-2 rounded-lg  bottom-5 right-5 ${
-                darkTheme ? 'text-white' : 'text-black'
-              }`}
-                size={32}
-              />
-              )
-            : (
-              <MdDarkMode
-                onClick={toggleTheme}
-                className={`bg-gray-300 cursor-pointer dark:bg-gray-700 p-2 rounded-lg  bottom-5 right-5 ${
-                darkTheme ? 'text-white' : 'text-black'
-              }`}
-                size={32}
-              />
-              )}
-        </div>
+          {darkTheme ? <SunnyButton /> : <DarkButton />}
+        </header>
         <div className=' shadow-md'>
           <AddTaskForm darkTheme={darkTheme} onAddTask={addTask} />
         </div>
@@ -106,19 +113,19 @@ function App () {
           </div>
 
           {tasks.length
-            ? (
-              <TaskList
-                tasks={tasks}
-                onEditTask={editTask}
-                onDeleteTask={deleteTask}
-                onToggleCompleted={toggleCompleted}
-              />
-              )
-            : (
-              <div className=' w-full h-[80%] flex items-center justify-center overflow-hidden'>
-                <p className=' text-gray-500 text-center z-10'>Empty task</p>
-              </div>
-              )}
+           ? (
+             <TaskList
+               tasks={tasks}
+               onEditTask={editTask}
+               onDeleteTask={deleteTask}
+               onToggleCompleted={toggleCompleted}
+             />
+           )
+           : (
+             <div className=' w-full h-[80%] flex items-center justify-center overflow-hidden'>
+               <p className=' text-gray-500 text-center z-10'>Empty task</p>
+             </div>
+           )}
         </div>
       </div>
     </div>
