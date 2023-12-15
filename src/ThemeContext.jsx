@@ -12,25 +12,24 @@ function initDarkTheme () {
   return darkTheme
 }
 
-
 const DarkThemeContext = createContext()
 
-function DarkThemeProvider(props) {
+function DarkThemeProvider (props) {
   const [darkTheme, setDarkTheme] = useState(initDarkTheme())
 
   useEffect(() => {
     localStorage.setItem('darkTheme', darkTheme)
-  }, [darkTheme]);
+  }, [darkTheme])
 
   const toggleTheme = () => {
     setDarkTheme((prevTheme) => !prevTheme)
   }
 
   return (
-    <DarkThemeContext.Provider value={{darkTheme, toggleTheme}}>
+    <DarkThemeContext.Provider value={{ darkTheme, toggleTheme }}>
       {props.children}
     </DarkThemeContext.Provider>
   )
 }
 
-export {DarkThemeContext, DarkThemeProvider}
+export { DarkThemeContext, DarkThemeProvider }
